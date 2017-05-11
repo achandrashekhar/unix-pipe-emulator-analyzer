@@ -9,6 +9,10 @@ struct metrics {
   int nbytes;
   int nlines;
   int type;
+  char process1[1000];
+  char process2[1000];
+  char isascii[10];
+  int pipenum;
 };
 
 int main(int argc, char **argv){
@@ -34,6 +38,8 @@ int main(int argc, char **argv){
   struct metrics m;
   struct metrics pm;
   char bufft[100];
+  char proc1[1000];
+  char proc2[1000];
 
   for(i=0;i<argc;i++){
     if(strcmp(argv[i],"|")==0)
@@ -41,7 +47,7 @@ int main(int argc, char **argv){
   }
   j=0;
   children = numpipes +1;
-  for(int i=1;i<argc;i++){
+  for(i=1;i<argc;i++){
     col=0;
     while(strcmp(argv[i],"|")!=0){
       arglist[j][col] = malloc(strlen(argv[j])*4);
@@ -106,6 +112,13 @@ int main(int argc, char **argv){
        }
       //printf("final buf[] = %s\n", bufft);
       //printf("\nlength is %d",strlen(bufft));
+      
+      // append data to struct
+      m.pipenum++;
+      
+      //m.process1 = (char*)arglist[0][0];
+      //m.process2 = (char*)arglist[1][0];
+      
        write(fds3[1],bufft,strlen(bufft));
        close(fds3[1]);
        write(fds2[1],(char*)&m,sizeof(m)); //was ,bufft,strlen(bufft)
@@ -153,6 +166,8 @@ int main(int argc, char **argv){
     //printf("\nparent length is %d",strlen(bufft));
      printf("parent final bytes = %d\n", pm.nbytes);
     printf("\nparent nlines =  %d",pm.nlines);
+    // printf("\n parent pipenum = %d ",m.pipenum);
+    //printf("\n %s -> %s",m.process1,m.process2);
     id = wait(NULL);
     id = wait(NULL);
     id = wait(NULL);
