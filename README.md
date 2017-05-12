@@ -6,6 +6,8 @@ I am using 3 pipes, there is a pipe between the parent and the middle process to
 Running the project :
 please add a \ before the pipes like \\|
 For example : 
+
+
 Aishwaryas-Air:~ ashi$ gcc -o new2 new2.c
 Aishwaryas-Air:~ ashi$ ./new2 seq 10000 \\| wc -l
 
