@@ -58,6 +58,7 @@ int main(int argc, char **argv){
 	break;
       }
     }
+    arglist[j][col] = '\0';
     j++;
   }
   //printf("%s %s %s %s",arglist[0][0],arglist[0][1],arglist[1][0],arglist[1][1]);
