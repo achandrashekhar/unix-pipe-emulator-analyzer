@@ -37,7 +37,7 @@ int main(int argc, char **argv){
   char buf[10000];
   struct metrics m;
   struct metrics pm;
-  char bufft[10000];
+  char bufft[100000];
   char proc1[1000];
   char proc2[1000];
 
@@ -105,17 +105,19 @@ int main(int argc, char **argv){
       //close(fds3[1]);
       
       while ((count = read(0, buf, 1)) > 0) {
-	strcat(bufft,buf);
+	//strcat(bufft,buf);
+	write(fds3[1],buf,strlen(buf));
 	m.nbytes++;
 	if(strcmp(buf,"\n")==0)
 	m.nlines++;
-	if(buf>127){
+	if(count<127){
 	  m.isascii=1;
 	}
 	else {
 	  m.isascii = 0;
 	}
        }
+       close(fds3[1]);
       //printf("final buf[] = %s\n", bufft);
       //printf("\nlength is %d",strlen(bufft));
       
@@ -126,8 +128,8 @@ int main(int argc, char **argv){
       strcpy(m.process2,arglist[1][0]);
       
       
-       write(fds3[1],bufft,strlen(bufft));
-       close(fds3[1]);
+      //write(fds3[1],bufft,strlen(bufft));
+      
        write(fds2[1],(char*)&m,sizeof(m)); //was ,bufft,strlen(bufft)
        close(fds2[1]);
        exit(0);
@@ -158,7 +160,7 @@ int main(int argc, char **argv){
     close(fds3[0]);
     close(fds3[1]);
     while ((count = read(fds2[0], &pm, sizeof(pm))) > 0) {
-	strcat(bufft,buf);
+      //strcat(bufft,buf);
 	
  
        }
