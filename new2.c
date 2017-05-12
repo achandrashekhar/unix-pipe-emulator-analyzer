@@ -166,14 +166,6 @@ int main(int argc, char **argv){
  
        }
     close(fds2[0]);
-     printf("parent final bytes = %d\n", pm.nbytes);
-    printf("\nparent nlines =  %d",pm.nlines);
-    printf("\n %s -> %s",pm.process1,pm.process2);
-    if(pm.isascii){
-      printf("\nASCII");
-    }else{
-      printf("\nBinary");
-    }
     FILE *f = fopen("pa.log", "w");
 if (f == NULL)
 {
