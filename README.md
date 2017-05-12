@@ -8,7 +8,7 @@ I support two pipes for this project.
 Running the project :
 please add a \ before the pipes like \\|
 
-~./new2 seq 10000 \\| wc -l~
+`./new2 seq 10000 \\| wc -l`
 
 For example : 
 
