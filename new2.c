@@ -11,7 +11,7 @@ struct metrics {
   int type;
   char process1[1000];
   char process2[1000];
-  char isascii[10];
+  int isascii;
   int pipenum;
 };
 
@@ -30,14 +30,14 @@ int main(int argc, char **argv){
   j=0;
   long numbytes = 0;
   char buffer[512];
-  FILE *f;
+  //FILE *f;
   char *arglist[1000][1000];
   int col;
   int count;
-  char buf[100];
+  char buf[10000];
   struct metrics m;
   struct metrics pm;
-  char bufft[100];
+  char bufft[10000];
   char proc1[1000];
   char proc2[1000];
 
@@ -109,6 +109,12 @@ int main(int argc, char **argv){
 	m.nbytes++;
 	if(strcmp(buf,"\n")==0)
 	m.nlines++;
+	if(buf>127){
+	  m.isascii=1;
+	}
+	else {
+	  m.isascii = 0;
+	}
        }
       //printf("final buf[] = %s\n", bufft);
       //printf("\nlength is %d",strlen(bufft));
@@ -116,8 +122,9 @@ int main(int argc, char **argv){
       // append data to struct
       m.pipenum++;
       
-      //m.process1 = (char*)arglist[0][0];
-      //m.process2 = (char*)arglist[1][0];
+      strcpy(m.process1,arglist[0][0]);
+      strcpy(m.process2,arglist[1][0]);
+      
       
        write(fds3[1],bufft,strlen(bufft));
        close(fds3[1]);
@@ -147,27 +154,38 @@ int main(int argc, char **argv){
    
     close(fds[0]);
     close(fds[1]);
-    //dup2(fds2[0],0);
-    //close(fds2[0]);
     close(fds2[1]);
     close(fds3[0]);
     close(fds3[1]);
-    /*while ((count = read(fds2[0], buf, 1)) > 0) {
-	strcat(bufft,buf);
- 
-	}*/
-    while ((count = read(fds2[0], &pm, sizeof(m))) > 0) {
+    while ((count = read(fds2[0], &pm, sizeof(pm))) > 0) {
 	strcat(bufft,buf);
 	
  
        }
     close(fds2[0]);
-    //printf("parent final buf[] = %s\n", bufft);
-    //printf("\nparent length is %d",strlen(bufft));
      printf("parent final bytes = %d\n", pm.nbytes);
     printf("\nparent nlines =  %d",pm.nlines);
-    // printf("\n parent pipenum = %d ",m.pipenum);
-    //printf("\n %s -> %s",m.process1,m.process2);
+    printf("\n %s -> %s",pm.process1,pm.process2);
+    if(pm.isascii){
+      printf("\nASCII");
+    }else{
+      printf("\nBinary");
+    }
+    FILE *f = fopen("pa.log", "w");
+if (f == NULL)
+{
+    printf("Error opening file!\n");
+    exit(1);
+}
+ fprintf(f,"[%d]",pm.pipenum);
+ fprintf(f,"%s -> %s",pm.process1,pm.process2);
+ fprintf(f,"\n %d bytes",pm.nbytes);
+ fprintf(f,"\n %d lines",pm.nlines);
+ if(pm.isascii){
+   fprintf(f,"\nASCII");
+    }else{
+   fprintf(f,"\nBinary");
+    }
     id = wait(NULL);
     id = wait(NULL);
     id = wait(NULL);
